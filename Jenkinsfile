@@ -9,9 +9,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-         git branch: 'main', 
-            url: 'https://github.com/jaliyaL/go-jenkins-dockerhub.git',
-            credentialsId: 'github-creds'
+        git 'https://github.com/jaliyaL/go-jenkins-dockerhub.git'
       }
     }
 
