@@ -27,7 +27,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'go build -o app'
+                sh 'go build -o app ./...'
             }
         }
 
