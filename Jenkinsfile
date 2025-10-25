@@ -15,10 +15,14 @@ pipeline {
       }
     }
 
+   stages {
     stage('Dependencies') {
-      steps {
-        sh 'go mod tidy'
-      }
+            agent {
+                docker { image 'golang:1.23' }
+            }
+            steps {
+                sh 'go mod tidy'
+            }
     }
 
     stage('Lint') {
