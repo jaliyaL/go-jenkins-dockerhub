@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         IMAGE_NAME = 'jaliyal/go-jenkins-demo'
     }
 
@@ -21,7 +20,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'go test ./...'
+                sh 'go test ./cmd/api/... -v'
             }
         }
 
@@ -33,14 +32,24 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                script {
-                    sh """
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh '''
+                    echo "$PASS" | docker login -u "$USER" --password-stdin
                     docker build -t $IMAGE_NAME:latest .
-                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
                     docker push $IMAGE_NAME:latest
-                    """
+                    docker logout
+                    '''
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build and Docker push completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed. Check logs for details.'
         }
     }
 }
