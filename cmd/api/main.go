@@ -10,6 +10,6 @@ import (
 
 func main() {
 	http.HandleFunc("/hello", handlers.HelloHandler)
-	fmt.Println("🚀 new Server running on :8080")
+	fmt.Println("🚀 Server running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
